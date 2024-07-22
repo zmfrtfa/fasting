@@ -2,6 +2,18 @@ let ended = 0;
 let alreadySet = 0;
 let windowloaded = 0;
 
+/* Time stuff */
+const fmtS = (s) => {
+  let   hours = Math.floor(s / 3600)
+  let       m = Math.floor((s % 3600) / 60)
+  let    sex2 = s % 60
+
+  if(hours<10) hours  = `0${hours}`;
+  if(m<10)     m      = `0${m}`;
+  if(sex2<10)  sex2   = `0${sex2}`;
+  return `${hours}:${m}:${sex2}`
+}
+
 /* Cookie stuff */
 const setCookie = (name, value, expiredate) => {
   const d = new Date();
@@ -50,7 +62,7 @@ window.onload = () => {
     if(getCookie("endedfast") == 0){
       alreadySet = 0;
       setCookie("endedfast", "0", 4000);
-      z.innerHTML = funnymath;
+      z.innerHTML = fmtS(funnymath);
       m.innerHTML = "seconds fasted";
     } else {
       setCookie("endedfast", "1", 4000);
@@ -60,18 +72,26 @@ window.onload = () => {
           setCookie("totaldata", 0, 4000);
         }
 
+        console.log("ok2");
+
         // Calculate difference.
         let newmath = parseInt(getCookie("totaldata")) + funnymath;
         setCookie("totaldata", newmath, 4000);
         alreadySet = 1;
       }
+
       z.innerHTML = "";
       m.innerHTML = "No fast running";
     }
 
     // Show totaldata
     let z1 = document.getElementById("totallength");
-    z1.innerHTML = `Total time spent fasting: ${getCookie("totaldata")}`;
+    z1.innerHTML = `Total time spent fasting: ${fmtS(getCookie("totaldata"))}`;
 
   }, 1000);
+}
+
+const reset = () => {
+  setCookie("totaldata", 0, 4000);
+  alert("Everything has been reset:)");
 }
