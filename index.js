@@ -1,5 +1,6 @@
 let ended = 0;
 let alreadySet = 0;
+let windowloaded = 0;
 
 /* Cookie stuff */
 const setCookie = (name, value, expiredate) => {
@@ -29,30 +30,35 @@ const startfast = () => {
   // Create a cookie with the starting fast name
   ended = 0;
   setCookie("fasting", Date.now(), 4000); // Expires in 4,000 days lol
+  setCookie("endedfast", "0", 4000);
 }
 
 const endfast = () => {
   ended = 1;
+  windowloaded = 0;
+  setCookie("endedfast", "1", 4000);
 }
 
 window.onload = () => {
+  windowloaded = 1;
   setInterval(() => {
     let z = document.getElementById("fast-length");
     let m = document.getElementById("running");
     if(z.innerHTML == NaN) ended = 1;
 
     let funnymath = Math.floor((Date.now() - parseInt(getCookie("fasting"), 10))/1000);
-    if(ended != 1){
+    if(getCookie("endedfast") == 0){
       alreadySet = 0;
+      setCookie("endedfast", "0", 4000);
       z.innerHTML = funnymath;
       m.innerHTML = "seconds fasted";
     } else {
-      if(alreadySet == 0){
+      setCookie("endedfast", "1", 4000);
+      if(alreadySet == 0 && windowloaded != 1){
         if(isNaN(parseInt(getCookie("totaldata")))){
           // Set it to zero
           setCookie("totaldata", 0, 4000);
         }
-        console.log(getCookie("totaldata"));
 
         // Calculate difference.
         let newmath = parseInt(getCookie("totaldata")) + funnymath;
@@ -61,9 +67,7 @@ window.onload = () => {
       }
       z.innerHTML = "";
       m.innerHTML = "No fast running";
-      console.log("Hi");
     }
-
 
     // Show totaldata
     let z1 = document.getElementById("totallength");
